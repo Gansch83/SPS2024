@@ -4,11 +4,17 @@ class Task:
     num_of_tasks = 0
 
     def __init__(self, task_id, status, note):
+        """Initialize task with task_id, status and note."""
         self.task_id = task_id
         self.status = status
         self.note = note
 
         Task.num_of_tasks += 1
+
+    def __del__(self):
+        """Destructor."""
+        Task.num_of_tasks -= 1
+
     #output without __str__
     # <__main__.Task object at 0x100ed39e0> Task removed successfully.
     # In addition, writing the output format multiple times is not efficient. -> DRY -> DON'T REPEAT YOURSELF!!!
@@ -91,57 +97,3 @@ class MyList:
                 self.add_task(Task(int(line["task_id"]), line["status"], line["note"]))
 
         print(f"Successfully loaded from file {csv_file.name}.")
-
-
-
-def main():
-    todo_list = MyList()
-    todo_list.load_from_file()
-    #initialize with some tasks
-    #todo_list.add_task(Task(Task.num_of_tasks, "Task 1", "open"))
-    #todo_list.add_task(Task(Task.num_of_tasks, "Task 2", "done"))
-    #todo_list.add_task(Task(Task.num_of_tasks, "Task 3", "open"))
-    #todo_list.add_task(Task(Task.num_of_tasks, "Task 4", "done"))
-
-    while True:
-        print("\n1. Add Task")
-        print("2. Remove Task")
-        print("3. View Tasks")
-        print("4. Change Task")
-        print("5. Set Task to DONE")
-        print("6. Show open Tasks")
-        print("7. Save to file")
-        #print("8. Load from file")
-        print("0. Quit")
-        choice = input("Enter your choice: ")
-
-        if choice == "1":
-            note = input("Enter note: ")
-            #status = input("Enter status: ")
-            todo_list.add_task(Task(Task.num_of_tasks, "open", note))
-            print("Task added successfully.")
-        elif choice == "2":
-            task_id = input("Enter task to be removed: ")
-            todo_list.remove_task(int(task_id))
-        elif choice == "3":
-            todo_list.view_tasks()
-        elif choice == "4":
-            task_id = input("Enter task to be changed: ")
-            todo_list.change_task(int(task_id))
-        elif choice == "5":
-            task_id = input("Enter task to be set to DONE: ")
-            todo_list.set_task_done(int(task_id))
-        elif choice == "6":
-            todo_list.view_tasks("open")
-        elif choice == "7":
-            todo_list.save_to_file()
-        elif choice == "8":
-            todo_list.load_from_file()
-        elif choice == "0":
-            print("Exiting...")
-            break
-        else:
-            print("Invalid choice. Please try again.")
-
-if __name__ == "__main__":
-    main()
