@@ -1,99 +1,170 @@
 import csv
 
-class Task:
-    num_of_tasks = 0
+"""
+File: myTodo_bib.py
+Author: Bernarda, Dominik, Stefan
+Date: 2024-12-07
 
-    def __init__(self, task_id, status, note):
-        """Initialize task with task_id, status and note."""
-        self.task_id = task_id
+This module contains the classes Note, Task and MyList.
+Note is the parent class of Task.
+MyList is a class that contains a list of Note and Task objects.
+The class MyList has methods to add, remove, view, change and set items to done.
+The class MyList also has methods to save and load the list to and from a csv file.
+"""
+
+class Note:
+    num_of_notes = 0
+
+    def __init__(self, note_id, status, desc):
+        """Initialize task with note_id, status and note."""
+        self.note_id = note_id
         self.status = status
-        self.note = note
+        self.desc = desc
 
-        Task.num_of_tasks += 1
+        Note.num_of_notes += 1
 
     def __del__(self):
         """Destructor."""
-        Task.num_of_tasks -= 1
+        Note.num_of_notes -= 1
 
     #output without __str__
     # <__main__.Task object at 0x100ed39e0> Task removed successfully.
     # In addition, writing the output format multiple times is not efficient. -> DRY -> DON'T REPEAT YOURSELF!!!
     def __str__(self):
-        return f"{self.task_id} - ({self.status}) - {self.note}"
+        return  f"{self.status} - {self.desc}"
+
+class Task(Note):
+
+    def __init__(self, note_id, status, desc, done_dat):
+        """Initialize task with task_id, status, note and done_dat."""
+        Note.__init__(self, note_id, status, desc)
+        self.done_dat = done_dat
+
+    def __str__(self):
+        return f"{self.status} - {self.desc} - {self.done_dat}"
+
 
 class MyList:
     def __init__(self):
-        self.tasks = []
+        self.items = []
 
-    def add_task(self, task):
-        """Add task to the list."""
-        self.tasks.append(task)
-        #print("Task added successfully.")
+    def add_item(self, item):
+        """Add item to the list."""
+        self.items.append(item)
+        print("Item added successfully.")
 
-    def remove_task(self, task_id):
-        """Remove task from the list."""
-        for todo in self.tasks:
-            if todo.task_id == task_id:
-                self.tasks.remove(todo)
-                print("Successfully removed: ", todo)
-                break
-        else:
-            print("Task not found.")
+    def remove_item(self, item_id):
+        """Remove item from the list."""
+        try:
+           print("Item successfully removed: ", self.items.pop(item_id))
+        except ValueError:
+            print("Wrong Value.")
+        except IndexError:
+            print("Wrong Index.")
+        except Exception as e:
+            print("Error: ", e)
 
-    def view_tasks(self, status=None):
-        """View all tasks in the list."""
-        if len(self.tasks) == 0:
-            print("No tasks in the list.")
+    def view_item(self, status=None):
+        """View all items in the list."""
+        print("=====START=====")
+        if len(self.items) == 0:
+            print("No items in the list.")
             return
         if status is None:
-            for todo in self.tasks:
-                print(todo)
+            #print all items with list index
+           for item in self.items:
+                print("#{}. {}".format(self.items.index(item), item))
         elif status == "open":
-            for todo in self.tasks:
-                if todo.status == "open":
-                    print(todo)
+            for item in self.items:
+                if item.status == "open":
+                    print("#{}. {}".format(self.items.index(item), item))
         elif status == "done":
-            for todo in self.tasks:
-                if todo.status == "done":
-                    print(todo)
+            for item in self.items:
+                if item.status == "done":
+                    print("#{}. {}".format(self.items.index(item), item))
+        print("=====END=====")
 
-    def change_task(self, task_id):
-        """Change task from the list."""
-        for todo in self.tasks:
-            if todo.task_id == task_id:
-                print("current: ", todo)
-                todo.note = input("Enter note: ")
-                todo.status = input("Enter status: ")
-                print("updated: ", todo)
-                break
+    def change_item(self, item_id):
+        """Change item from the list."""
+        try:
+            print("current: ", self.items[item_id])
+            self.items[item_id].desc = input("Enter NEW description: ")
+            self.items[item_id].status = input("Enter NEW status: ")
+        except ValueError:
+            print("Wrong Value.")
+        except IndexError:
+            print("Wrong Index.")
+        except Exception as e:
+            print("Error: ", e)
         else:
-            print("Task not found.")
+            # else is executed if no exception occurs
+            print("Item changed successfully.", self.items[item_id])
 
-    def set_task_done(self, task_id):
-        """Set task to DONE."""
-        for todo in self.tasks:
-            if todo.task_id == task_id:
-                todo.status = "done"
-                print("Task set to DONE: ", todo)
-                break
+    def set_item_done(self, item_id):
+        """Set item to DONE."""
+        try:
+            self.items[item_id].status = "done"
+        except ValueError:
+            print("Wrong Value.")
+        except IndexError:
+            print("Wrong Index.")
+        except Exception as e:
+            print("Error: ", e)
         else:
-            print("Task not found.")
+            # else is executed if no exception occurs
+            print("Item set to DONE: ", self.items[item_id])
 
-    def save_to_file(self):
-        with open("myTodo.csv", "w") as csv_file:
-            csv_writer = csv.DictWriter(csv_file, fieldnames=["task_id", "status", "note"], delimiter="\t")
-            csv_writer.writeheader()
-
-            for task in self.tasks:
-                csv_writer.writerow({"task_id": task.task_id, "status": task.status, "note": task.note})
-
-    def load_from_file(self):
+    def save_to_file(self, para_file):
         # working folder is the folder where the script is located
-        with open("myTodo.csv", "r") as csv_file:
-            csv_reader = csv.DictReader(csv_file, delimiter="\t")
+        try:
+            # open() sollte mit einem Kontextmanager (with) verwendet werden, um sicherzustellen,
+            # dass die Datei automatisch geschlossen wird.
+            with open(para_file, "w") as csv_file:
+                csv_writer = csv.DictWriter(csv_file, fieldnames=["note_id", "status", "desc"], delimiter="\t")
+                csv_writer.writeheader()
+                for item in self.items:
+                    csv_writer.writerow({"note_id": item.note_id, "status": item.status, "desc": item.desc})
 
-            for line in csv_reader:
-                #print(line)
-                self.add_task(Task(int(line["task_id"]), line["status"], line["note"]))
+            #csv_file = open("myTodo.csv", "w")
+            #csv_writer = csv.DictWriter(csv_file, fieldnames=["note_id", "status", "desc"], delimiter="\t")
+            #csv_writer.writeheader()
+            #for item in self.items:
+            #    csv_writer.writerow({"note_id": item.note_id, "status": item.status, "desc": item.desc})
+        except FileExistsError:
+            print("File already exists!")
+        except Exception as e:
+            print("Error: ", e)
+        else:
+            # else is executed if no exception occurs
+            print("Successfully saved to file.")
+        finally:
+            # finally is executed no matter what
+            # csv_file.close()
+            print("file closed.")
 
-        print(f"Successfully loaded from file {csv_file.name}.")
+    def load_from_file(self, para_file):
+        """LOADING csv-file: working folder is the folder where the script is located"""
+        try:
+            # open() sollte mit einem Kontextmanager (with) verwendet werden, um sicherzustellen,
+            # dass die Datei automatisch geschlossen wird.
+            with open(para_file, "r") as csv_file:
+                csv_reader = csv.DictReader(csv_file, delimiter="\t")
+                for line in csv_reader:
+                    self.add_item(Note(int(line["note_id"]), line["status"], line["desc"]))
+
+            #csv_file = open("myTodo.csv", "r")
+            #csv_reader = csv.DictReader(csv_file, delimiter="\t")
+            #for line in csv_reader:
+            #    self.add_item(Note(int(line["note_id"]), line["status"], line["desc"]))
+        except FileNotFoundError:
+            print("File not found!")
+        except Exception as e:
+            print("Error: ", e)
+        else:
+            #else is executed if no exception occurs
+            print(f"Successfully loaded from file {csv_file.name}.")
+        finally:
+            # finally is executed no matter what
+            # csv_file.close()
+            print("file closed.")
+

@@ -1,62 +1,67 @@
-import myTodo_bib as bib
+from myTodo_bib import MyList, Note
 
 def main():
-    todo_list = bib.MyList()
+    todo_list = MyList()
+    #docstring von load_from_file / "Magic Function" __doc__
+    print(MyList.load_from_file.__doc__)
+
     todo_list.load_from_file()
     #initialize with some tasks
-    #todo_list.add_task(Task(Task.num_of_tasks, "Task 1", "open"))
-    #todo_list.add_task(Task(Task.num_of_tasks, "Task 2", "done"))
-    #todo_list.add_task(Task(Task.num_of_tasks, "Task 3", "open"))
-    #todo_list.add_task(Task(Task.num_of_tasks, "Task 4", "done"))
+    #todo_list.add_task(Task(Task.num_of_notes, "Task 1", "open"))
+    #todo_list.add_task(Task(Task.num_of_notes, "Task 2", "done"))
+    #todo_list.add_task(Task(Task.num_of_notes, "Task 3", "open"))
+    #todo_list.add_task(Task(Task.num_of_notes, "Task 4", "done"))
 
     while True:
-        print("\n1. Add Task")
-        print("2. Remove Task")
-        print("3. View Tasks")
-        print("4. Change Task")
-        print("5. Set Task to DONE")
-        print("6. Show open Tasks")
-        print("7. Save to file")
-        #print("8. Load from file")
-        print("0. Quit")
-        choice = input("Enter your choice: ")
+        try:
+            print("\nMy Notes & To-Do List")
+            print("************************")
+            print("Number of items: ", Note.num_of_notes)
+            print("\n1. Add Note")
+            print("2. Remove Note")
+            print("3. View Notes")
+            print("4. Change Note")
+            print("5. Set Note to DONE")
+            print("6. Show open Notes")
+            print("7. Save to file")
+            #print("8. Load from file")
+            print("0. Quit")
+            choice = input("Enter your choice: ")
 
-        if choice == "1":
-            try:
-                note = input("Enter note: ")
-                #status = input("Enter status: ")
-                todo_list.add_task(bib.Task(bib.Task.num_of_tasks, "open", note))
-                print("Task added successfully.")
-            except ValueError:
-                print("Invalid input. Please try again.")
-        elif choice == "2":
-            try:
-                task_id = input("Enter task to be removed: ")
-                todo_list.remove_task(int(task_id))
-            except ValueError:
-                print("Invalid task id. Please try again.")
-        elif choice == "3":
-            todo_list.view_tasks()
-        elif choice == "4":
-            try:
-                task_id = input("Enter task to be changed: ")
-                todo_list.change_task(int(task_id))
-            except ValueError:
-                print("Invalid task id. Please try again.")
-        elif choice == "5":
-            task_id = input("Enter task to be set to DONE: ")
-            todo_list.set_task_done(int(task_id))
-        elif choice == "6":
-            todo_list.view_tasks("open")
-        elif choice == "7":
-            todo_list.save_to_file()
-        elif choice == "8":
-            todo_list.load_from_file()
-        elif choice == "0":
-            print("Exiting...")
-            break
-        else:
-            print("Invalid choice. Please try again.")
+            if choice == "1":
+                note_desc = input("Enter description: ")
+                todo_list.add_item(Note(Note.num_of_notes, "open", note_desc))
+            elif choice == "2":
+                todo_list.view_item()
+                item_id = input("Enter item to be removed: ")
+                todo_list.remove_item(int(item_id))
+            elif choice == "3":
+                todo_list.view_item()
+            elif choice == "4":
+                todo_list.view_item()
+                item_id = input("Enter item to be changed: ")
+                todo_list.change_item(int(item_id))
+            elif choice == "5":
+                todo_list.view_item()
+                item_id = input("Enter item to be set to DONE: ")
+                todo_list.set_item_done(int(item_id))
+            elif choice == "6":
+                todo_list.view_item("open")
+            elif choice == "7":
+                todo_list.save_to_file("myTodo.csv")
+            elif choice == "8":
+                todo_list.load_from_file("myTodo.csv")
+            elif choice == "0":
+                print("Exiting...")
+                break
+            else:
+                raise ValueError()
+            #raise ValueError("ValueError txt: Invalid input. Please try again.")
+            #Text vom except wird ausgegeben, wenn ValueError auftritt
+        except ValueError:
+            print("Invalid input. Please try again.")
+        except Exception as e:
+            print("Error: ", e)
 
 if __name__ == "__main__":
     main()
