@@ -142,6 +142,15 @@ class MyList:
             # csv_file.close()
             print("file closed.")
 
+    @staticmethod
+    def file_selection():
+        """Select file."""
+        try:
+            para_file = input("Enter file name to be used: ")
+            return para_file
+        except Exception as e:
+            print("Error: ", e)
+
     def load_from_file(self, para_file):
         """LOADING csv-file: working folder is the folder where the script is located"""
         try:
@@ -168,3 +177,38 @@ class MyList:
             # csv_file.close()
             print("file closed.")
 
+    @staticmethod
+    def closing_app():
+        """Closing the app."""
+        try:
+            print("Do you want to save before closing?")
+            choice = input("Enter 'y' for yes or 'n' for no: ")
+            if choice.upper() == "Y":
+                return True
+            elif choice.upper() == "N":
+                return False
+            else:
+                raise ValueError()
+        except ValueError:
+            print("Invalid input. Please try again.")
+        except Exception as e:
+            print("Error: ", e)
+
+    @staticmethod
+    def static_smiley_code():
+        """A static method is a method that belongs to a class rather than an instance of the class.
+        It does not require access to the instance (self) or class (cls) variables"""
+        try:
+            print('''
+                  , ; ,   .-'"""'-.   , ; ,
+                  \\|/  .'         '.  \|//
+                   \-;-/   ()   ()   \-;-/
+                   // ;               ; \\
+                  //__; :.         .; ;__\\
+                 `-----\'.'-.....-'.'/-----'
+                        '.'.-.-,_.'.'
+                jgs       '(  (..-'
+                            '-'    
+            ''')
+        except Exception as e:
+            print("Error: ", e)

@@ -5,7 +5,7 @@ def main():
     #docstring von load_from_file / "Magic Function" __doc__
     print(MyList.load_from_file.__doc__)
 
-    todo_list.load_from_file()
+    todo_list.load_from_file("myTodo.csv")
     #initialize with some tasks
     #todo_list.add_task(Task(Task.num_of_notes, "Task 1", "open"))
     #todo_list.add_task(Task(Task.num_of_notes, "Task 2", "done"))
@@ -48,12 +48,22 @@ def main():
             elif choice == "6":
                 todo_list.view_item("open")
             elif choice == "7":
+                # not yet activated!!!
+                # my_file = MyList.file_selection()
                 todo_list.save_to_file("myTodo.csv")
             elif choice == "8":
-                todo_list.load_from_file("myTodo.csv")
+                #not yet activated!!!
+                my_file = MyList.file_selection()
+                todo_list.load_from_file(my_file)
             elif choice == "0":
-                print("Exiting...")
-                break
+                if MyList.closing_app():
+                    #save to file before quitting
+                    todo_list.save_to_file("myTodo.csv")
+                    MyList.static_smiley_code()
+                    break
+                else:
+                    MyList.static_smiley_code()
+                    break
             else:
                 raise ValueError()
             #raise ValueError("ValueError txt: Invalid input. Please try again.")
